@@ -28,6 +28,7 @@ public:
 	Game(sf::ContextSettings settings);
 	~Game();
 	void run();
+
 private:
 	Window window;
 	bool isRunning = false;
@@ -35,6 +36,7 @@ private:
 	void update();
 	void render();
 	void unload();
+	void drawCube(const mat4& t_mvp);
 };
 
 #endif

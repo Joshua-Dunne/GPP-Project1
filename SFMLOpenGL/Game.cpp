@@ -30,7 +30,9 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-mat4 mvp, projection, view, model;			// Model View Projection
+const int s_MAX_CUBES = 4;
+
+mat4 mvp[s_MAX_CUBES], projection, view, model[s_MAX_CUBES];		// Model View Projection
 
 Game::Game() : 
 	window(VideoMode(800, 600), 
@@ -72,25 +74,29 @@ void Game::run()
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				// Set Model Rotation
-				model = rotate(model, 0.01f, glm::vec3(0, 1, 0)); // Rotate
+				for (auto& currModel : model)
+					currModel = rotate(currModel, 0.01f, glm::vec3(0, 1, 0)); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				// Set Model Rotation
-				model = rotate(model, -0.01f, glm::vec3(0, 1, 0)); // Rotate
+				for (auto& currModel : model)
+					currModel = rotate(currModel, -0.01f, glm::vec3(0, 1, 0)); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				// Set Model Rotation
-				model = rotate(model, -0.01f, glm::vec3(1, 0, 0)); // Rotate
+				for (auto& currModel : model)
+					currModel = rotate(currModel, -0.01f, glm::vec3(1, 0, 0)); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
 				// Set Model Rotation
-				model = rotate(model, 0.01f, glm::vec3(1, 0, 0)); // Rotate
+				for (auto& currModel : model)
+					currModel = rotate(currModel, 0.01f, glm::vec3(1, 0, 0)); // Rotate
 			}
 		}
 		update();
@@ -189,12 +195,12 @@ void Game::initialize()
 		"void main() {"
 		//"	vec4 lightColor = vec4(1.0f, 0.0f, 0.0f, 1.0f); "
 		//"	fColor = vec4(0.50f, 0.50f, 0.50f, 1.0f);"
-		//"	fColor = texture2D(f_texture, uv);"
+		"	fColor = texture2D(f_texture, uv);"
 		//"	fColor = color * texture2D(f_texture, uv);"
 		//"	fColor = lightColor * texture2D(f_texture, uv);"
 		//"	fColor = color + texture2D(f_texture, uv);"
 		//"	fColor = color - texture2D(f_texture, uv);"
-		"	fColor = color;"
+		//"	fColor = color;"
 		"}"; //Fragment Shader Src
 
 	DEBUG_MSG("Setting Up Fragment Shader");
@@ -294,14 +300,27 @@ void Game::initialize()
 		);
 
 	// Model matrix
-	model = mat4(
-		1.0f					// Identity Matrix
+	for (auto& currModel : model)
+	{
+		currModel = mat4(
+			1.0f					// Identity Matrix
 		);
+	}
+		
 
 	// Enable Depth Test
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+
+	float distancing{ 1.0f };
+
+	for (auto& currModel : model)
+	{
+		currModel = translate(glm::mat4(1.0f), glm::vec3(-distancing, 0.0f, 0.0));
+		distancing += 1.0f;
+	}
+	
 }
 
 void Game::update()
@@ -310,7 +329,10 @@ void Game::update()
 	DEBUG_MSG("Updating...");
 #endif
 	// Update Model View Projection
-	mvp = projection * view * model;
+	for (int index = 0; index < s_MAX_CUBES; ++index)
+	{
+		mvp[index] = projection * view * model[index];
+	}
 }
 
 void Game::render()
@@ -322,13 +344,30 @@ void Game::render()
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	for (int i = 0; i < s_MAX_CUBES; i++)
+	{
+		drawCube(mvp[i]);
+	}
+
+
+	window.display();
+
+	//Disable Arrays
+	glDisableVertexAttribArray(positionID);
+	glDisableVertexAttribArray(colorID);
+	glDisableVertexAttribArray(uvID);
+
+}
+
+void Game::drawCube(const mat4& t_mvp)
+{
 	//VBO Data....vertices, colors and UV's appended
 	glBufferSubData(GL_ARRAY_BUFFER, 0 * VERTICES * sizeof(GLfloat), 3 * VERTICES * sizeof(GLfloat), vertices);
 	glBufferSubData(GL_ARRAY_BUFFER, 3 * VERTICES * sizeof(GLfloat), 4 * COLORS * sizeof(GLfloat), colors);
 	glBufferSubData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat), 2 * UVS * sizeof(GLfloat), uvs);
 
 	// Send transformation to shader mvp uniform
-	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &mvp[0][0]);
+	glUniformMatrix4fv(mvpID, 1, GL_FALSE, &t_mvp[0][0]);
 
 	//Set Active Texture .... 32
 	glActiveTexture(GL_TEXTURE0);
@@ -339,7 +378,7 @@ void Game::render()
 	glVertexAttribPointer(positionID, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(colorID, 4, GL_FLOAT, GL_FALSE, 0, (VOID*)(3 * VERTICES * sizeof(GLfloat)));
 	glVertexAttribPointer(uvID, 2, GL_FLOAT, GL_FALSE, 0, (VOID*)(((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat)));
-	
+
 	//Enable Arrays
 	glEnableVertexAttribArray(positionID);
 	glEnableVertexAttribArray(colorID);
@@ -347,13 +386,6 @@ void Game::render()
 
 	//Draw Element Arrays
 	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
-	window.display();
-
-	//Disable Arrays
-	glDisableVertexAttribArray(positionID);
-	glDisableVertexAttribArray(colorID);
-	glDisableVertexAttribArray(uvID);
-	
 }
 
 void Game::unload()
