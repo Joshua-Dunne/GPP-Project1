@@ -30,9 +30,11 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-const int s_MAX_CUBES = 4;
+const int s_MAX_CUBES = 3;
 
-mat4 mvp[s_MAX_CUBES], projection, view, model[s_MAX_CUBES];		// Model View Projection
+mat4 mvp[s_MAX_CUBES], projection, view;		// Model View Projection
+
+GameObject enemy[s_MAX_CUBES];
 
 Game::Game() : 
 	window(VideoMode(800, 600), 
@@ -74,29 +76,29 @@ void Game::run()
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			{
 				// Set Model Rotation
-				for (auto& currModel : model)
-					currModel = rotate(currModel, 0.01f, glm::vec3(0, 1, 0)); // Rotate
+				for (auto& currEnemy : enemy)
+					currEnemy.updateModel(rotate(currEnemy.getModel(), 0.01f, glm::vec3(0, 1, 0))); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			{
 				// Set Model Rotation
-				for (auto& currModel : model)
-					currModel = rotate(currModel, -0.01f, glm::vec3(0, 1, 0)); // Rotate
+				for (auto& currEnemy : enemy)
+					currEnemy.updateModel(rotate(currEnemy.getModel(), -0.01f, glm::vec3(0, 1, 0))); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			{
 				// Set Model Rotation
-				for (auto& currModel : model)
-					currModel = rotate(currModel, -0.01f, glm::vec3(1, 0, 0)); // Rotate
+				for (auto& currEnemy : enemy)
+					currEnemy.updateModel(rotate(currEnemy.getModel(), -0.01f, glm::vec3(1, 0, 0))); // Rotate
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			{
 				// Set Model Rotation
-				for (auto& currModel : model)
-					currModel = rotate(currModel, 0.01f, glm::vec3(1, 0, 0)); // Rotate
+				for (auto& currEnemy : enemy)
+					currEnemy.updateModel(rotate(currEnemy.getModel(), 0.01f, glm::vec3(1, 0, 0))); // Rotate
 			}
 		}
 		update();
@@ -300,11 +302,11 @@ void Game::initialize()
 		);
 
 	// Model matrix
-	for (auto& currModel : model)
+	for (auto& currEnemy : enemy)
 	{
-		currModel = mat4(
+		currEnemy.updateModel(mat4(
 			1.0f					// Identity Matrix
-		);
+		));
 	}
 		
 
@@ -313,12 +315,19 @@ void Game::initialize()
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 
-	float distancing{ 1.0f };
+	float distancing{ 2.0f };
 
-	for (auto& currModel : model)
+	// initially push every cube back by 15
+	// this lets us space them a bit more nicely
+	for (auto& currEnemy : enemy)
 	{
-		currModel = translate(glm::mat4(1.0f), glm::vec3(-distancing, 0.0f, 0.0));
-		distancing += 1.0f;
+		currEnemy.updateModel(translate(currEnemy.getModel(), glm::vec3(8.0f, 0.0f, 0.0)));
+	}
+
+	for (auto& currEnemy : enemy)
+	{
+		currEnemy.updateModel(translate(currEnemy.getModel(), glm::vec3(-distancing, 0.0f, 0.0)));
+		distancing += 3.5f;
 	}
 	
 }
@@ -331,7 +340,7 @@ void Game::update()
 	// Update Model View Projection
 	for (int index = 0; index < s_MAX_CUBES; ++index)
 	{
-		mvp[index] = projection * view * model[index];
+		mvp[index] = projection * view * enemy[index].getModel();
 	}
 }
 

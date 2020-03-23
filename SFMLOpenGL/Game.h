@@ -17,6 +17,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "GameObject.h"
+
 using namespace std;
 using namespace sf;
 using namespace glm;
