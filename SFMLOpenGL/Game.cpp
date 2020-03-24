@@ -1,5 +1,6 @@
 #include <Game.h>
 #include <Cube.h>
+#include "ScreenSize.h"
 
 GLuint	vsid,		// Vertex Shader ID
 		fsid,		// Fragment Shader ID
@@ -30,20 +31,20 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-const int s_MAX_CUBES = 3;
+const int s_MAX_CUBES = 8;
 
 mat4 mvp[s_MAX_CUBES], projection, view;		// Model View Projection
 
 GameObject enemy[s_MAX_CUBES];
 
 Game::Game() : 
-	window(VideoMode(800, 600), 
+	window(VideoMode(800,600), 
 	"Introduction to OpenGL Texturing")
 {
 }
 
 Game::Game(sf::ContextSettings settings) : 
-	window(VideoMode(800, 600), 
+	window(VideoMode(s_SCREEN_WIDTH, s_SCREEN_HEIGHT), 
 	"Introduction to OpenGL Texturing", 
 	sf::Style::Default, 
 	settings)
@@ -55,61 +56,38 @@ Game::~Game(){}
 
 void Game::run()
 {
-
 	initialize();
 
-	Event event;
-
-	while (isRunning){
-
-#if (DEBUG >= 2)
-		DEBUG_MSG("Game running...");
-#endif
-
-		while (window.pollEvent(event))
+	sf::Clock clock;
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+	const float fps{ 60.0f };
+	sf::Time timePerFrame = sf::seconds(1.0f / fps); // 60 fps
+	while (window.isOpen())
+	{
+		processEvents();
+		timeSinceLastUpdate += clock.restart();
+		while (timeSinceLastUpdate > timePerFrame)
 		{
-			if (event.type == Event::Closed)
-			{
-				isRunning = false;
-			}
-
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			{
-				// Set Model Rotation
-				for (auto& currEnemy : enemy)
-					currEnemy.updateModel(rotate(currEnemy.getModel(), 0.01f, glm::vec3(0, 1, 0))); // Rotate
-			}
-
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			{
-				// Set Model Rotation
-				for (auto& currEnemy : enemy)
-					currEnemy.updateModel(rotate(currEnemy.getModel(), -0.01f, glm::vec3(0, 1, 0))); // Rotate
-			}
-
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			{
-				// Set Model Rotation
-				for (auto& currEnemy : enemy)
-					currEnemy.updateModel(rotate(currEnemy.getModel(), -0.01f, glm::vec3(1, 0, 0))); // Rotate
-			}
-
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			{
-				// Set Model Rotation
-				for (auto& currEnemy : enemy)
-					currEnemy.updateModel(rotate(currEnemy.getModel(), 0.01f, glm::vec3(1, 0, 0))); // Rotate
-			}
+			timeSinceLastUpdate -= timePerFrame;
+			processEvents();
+			update();
 		}
-		update();
 		render();
 	}
 
-#if (DEBUG >= 2)
-	DEBUG_MSG("Calling Cleanup...");
-#endif
 	unload();
+}
 
+void Game::processEvents()
+{
+	sf::Event newEvent;
+	while (window.pollEvent(newEvent))
+	{
+		if (sf::Event::Closed == newEvent.type)
+		{
+			window.close();
+		}
+	}
 }
 
 void Game::initialize()
@@ -299,37 +277,28 @@ void Game::initialize()
 		vec3(0.0f, 4.0f, 10.0f),	// Camera (x,y,z), in World Space
 		vec3(0.0f, 0.0f, 0.0f),		// Camera looking at origin
 		vec3(0.0f, 1.0f, 0.0f)		// 0.0f, 1.0f, 0.0f Look Down and 0.0f, -1.0f, 0.0f Look Up
-		);
-
-	// Model matrix
-	for (auto& currEnemy : enemy)
-	{
-		currEnemy.updateModel(mat4(
-			1.0f					// Identity Matrix
-		));
-	}
-		
+		);	
 
 	// Enable Depth Test
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 
-	float distancing{ 2.0f };
+	initCubes();
+}
 
-	// initially push every cube back by 15
-	// this lets us space them a bit more nicely
+void Game::initCubes()
+{
+	float distancing{ 5.0f };
+
+	// initialise at identity matrix, then translate backwards
+	// distance each cube moves back is equal to the number of cubes generated
+	// +1 is done so it never multiplies by 0
 	for (auto& currEnemy : enemy)
 	{
-		currEnemy.updateModel(translate(currEnemy.getModel(), glm::vec3(8.0f, 0.0f, 0.0)));
+		currEnemy.initialize(translate(mat4(1.0f), glm::vec3(distancing + (2.0f * s_MAX_CUBES + 1), 0.0f, 0.0f)));
+		distancing += 2.0f;				
 	}
-
-	for (auto& currEnemy : enemy)
-	{
-		currEnemy.updateModel(translate(currEnemy.getModel(), glm::vec3(-distancing, 0.0f, 0.0)));
-		distancing += 3.5f;
-	}
-	
 }
 
 void Game::update()
@@ -337,6 +306,10 @@ void Game::update()
 #if (DEBUG >= 2)
 	DEBUG_MSG("Updating...");
 #endif
+
+	for (auto& currEnemy : enemy)
+		currEnemy.update();
+
 	// Update Model View Projection
 	for (int index = 0; index < s_MAX_CUBES; ++index)
 	{

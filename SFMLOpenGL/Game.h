@@ -8,6 +8,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
@@ -31,10 +32,13 @@ public:
 	~Game();
 	void run();
 
+	void processEvents();
+
 private:
 	Window window;
 	bool isRunning = false;
 	void initialize();
+	void initCubes();
 	void update();
 	void render();
 	void unload();
