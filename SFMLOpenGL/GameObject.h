@@ -14,13 +14,11 @@
 
 #include "ScreenSize.h"
 
-using namespace glm;
-using namespace sf;
-
 class GameObject
 {
 public:
 	GameObject();
+	GameObject(float t_screenWidth, float t_screenHeight, float t_cameraZDistance);
 	// Constructors
 	// Gets and Sets
 	// Checking Collisions
@@ -33,18 +31,27 @@ private:
 	// model
 	// collider tinyc2
 
-	mat4 model;
-	Vector2f position;
+	glm::mat4 model;
+	sf::Vector2f position;
+	
 	float speed{ 0.0f }; // how fast this cube will move from right to left
+	float m_cameraZDistance; // how far away the camera is on the Z axis
+
+	const float m_screenWidth;
+	const float m_screenHeight;
+
+	bool isHit{ false }; // whether or not this cube was hit
+	bool finishedFalling{ false }; // whether or not this cube has finished its falling
 
 public:
-	void initialize(const mat4& t_model);
-	inline const mat4 getModel() const { return model; };
-	inline const Vector2f getPosition() const { return position; };
+	void initialize(const glm::mat4& t_model);
+	inline const glm::mat4 getModel() const { return model; };
+	inline const sf::Vector2f getPosition() const { return position; };
 	void update();
-	inline void updateModel(mat4& t_newModel) { model = t_newModel; };
+	inline void updateModel(const glm::mat4& t_newModel) { model = t_newModel; };
 	void updatePosition(sf::Vector2f t_direction);
 	void pathEndCheck();
+	void collisionCheck(sf::Vector2f t_mousePosition);
 };
 
 #endif

@@ -160,6 +160,7 @@ xcopy $(GLEW_SDK)\bin\Release\Win32 $(TargetDir) /C /Y</Command>
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="ScreenSize.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="tinyc2.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>

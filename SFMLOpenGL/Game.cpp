@@ -31,11 +31,13 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-const int s_MAX_CUBES = 8;
+const int s_MAX_CUBES = 2;
 
 mat4 mvp[s_MAX_CUBES], projection, view;		// Model View Projection
 
-GameObject enemy[s_MAX_CUBES];
+const float m_cameraZDistance{ 10.0f };
+
+GameObject enemy[s_MAX_CUBES]{ {s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance} };
 
 Game::Game() : 
 	window(VideoMode(800,600), 
@@ -86,6 +88,14 @@ void Game::processEvents()
 		if (sf::Event::Closed == newEvent.type)
 		{
 			window.close();
+		}
+
+		if (sf::Event::MouseButtonPressed == newEvent.type)
+		{
+			for (auto& currEnemy : enemy)
+			{
+				currEnemy.collisionCheck(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
+			}
 		}
 	}
 }
@@ -274,7 +284,7 @@ void Game::initialize()
 
 	// Camera Matrix
 	view = lookAt(
-		vec3(0.0f, 4.0f, 10.0f),	// Camera (x,y,z), in World Space
+		vec3(0.0f, 4.0f, m_cameraZDistance),	// Camera (x,y,z), in World Space
 		vec3(0.0f, 0.0f, 0.0f),		// Camera looking at origin
 		vec3(0.0f, 1.0f, 0.0f)		// 0.0f, 1.0f, 0.0f Look Down and 0.0f, -1.0f, 0.0f Look Up
 		);	

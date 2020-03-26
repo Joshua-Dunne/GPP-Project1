@@ -1,5 +1,9 @@
 #include <Game.h>
 
+#define TINYC2_IMPL
+#include <tinyc2.h>
+
+
 int main(void)
 {
 	sf::ContextSettings settings;
