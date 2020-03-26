@@ -39,8 +39,8 @@ private:
 
 public:
 	void initialize(const mat4& t_model);
-	const mat4 getModel() const { return model; };
-	const Vector2f getPosition() const { return position; };
+	inline const mat4 getModel() const { return model; };
+	inline const Vector2f getPosition() const { return position; };
 	void update();
 	inline void updateModel(mat4& t_newModel) { model = t_newModel; };
 	void updatePosition(sf::Vector2f t_direction);
