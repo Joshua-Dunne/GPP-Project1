@@ -1,5 +1,5 @@
 #include "GameObject.h"
-#include "tinyc2.h"
+#include "./tinyc2.h"
 
 GameObject::GameObject() : 
 	model(1.0f), 
@@ -30,7 +30,7 @@ void GameObject::initialize(const glm::mat4& t_model)
 	const float* modelData = (const float*)glm::value_ptr(t_model);
 
 	model = t_model;
-	speed = ((rand() % 10) + 3) / 100.0f; // get a random speed from 0.03 to 0.1
+	speed = ((rand() % 10) + 3) / 1000.0f; // get a random speed from 0.003 to 0.01
 
 	position.y = m_screenHeight * ( ((modelData[13] / (4.0f/3.0f) ) + m_cameraZDistance) / (10.0f * 2));
 	// only need to calculate position once, since the position for collisions will never change on Y

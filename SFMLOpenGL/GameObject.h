@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-#include "ScreenSize.h"
+#include "./ScreenSize.h"
 
 class GameObject
 {
