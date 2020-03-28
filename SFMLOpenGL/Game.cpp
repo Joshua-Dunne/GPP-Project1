@@ -31,17 +31,22 @@ int comp_count;		// Component of texture
 
 unsigned char* img_data;		// image data
 
-const int s_MAX_CUBES = 2;
+const int s_MAX_CUBES = 6;
 
 mat4 mvp[s_MAX_CUBES], projection, view;		// Model View Projection
 
 const float m_cameraZDistance{ 10.0f };
 
-GameObject enemy[s_MAX_CUBES]{ {s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance} };
+GameObject enemy[s_MAX_CUBES]{	{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
+								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
+								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
+								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
+								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
+								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance} };
 
 Game::Game() : 
 	window(VideoMode(800,600), 
-	"Introduction to OpenGL Texturing")
+	"Cube Buster")
 {
 }
 
