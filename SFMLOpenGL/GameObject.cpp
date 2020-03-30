@@ -8,14 +8,13 @@ GameObject::GameObject() :
 	m_cameraZDistance(10.0f)
 {
 }
-
+	
 GameObject::GameObject(float t_screenWidth, float t_screenHeight, float t_cameraZDistance):
 	model(1.0f),
 	m_screenWidth(t_screenWidth),
 	m_screenHeight(t_screenHeight),
 	m_cameraZDistance(t_cameraZDistance)
 {
-
 }
 
 /// <summary>
@@ -44,20 +43,26 @@ void GameObject::initialize(const glm::mat4& t_model)
 /// </summary>
 void GameObject::update()
 {
-	updateModel(translate(model, glm::vec3(-speed, 0.0f, 0.0)));
-	updatePosition(sf::Vector2f{ -speed, 0.0f });
-	pathEndCheck();
+	if (!isHit)
+	{
+		updateModel(translate(model, glm::vec3(-speed, 0.0f, 0.0)));
+		updatePosition();
+		pathEndCheck();
+	}
+	else
+	{
+		playHitAnimation();
+	}
 }
 
 /// <summary>
 /// Update position of Game Object relative to screen
 /// </summary>
-/// <param name="t_direction">The direction the GameObject wants to move</param>
-void GameObject::updatePosition(sf::Vector2f t_direction)
+void GameObject::updatePosition()
 {
 	const float* modelData = (const float*)glm::value_ptr(model);
 	position.x = m_screenWidth * ((modelData[12] + m_cameraZDistance) / (m_cameraZDistance * 2));
-	
+	position.y = m_screenHeight * (((modelData[13] / (4.0f / 3.0f)) + m_cameraZDistance) / (10.0f * 2));
 }
 
 /// <summary>
@@ -65,30 +70,48 @@ void GameObject::updatePosition(sf::Vector2f t_direction)
 /// </summary>
 void GameObject::pathEndCheck()
 {
-	// check if the GameObject is off the screen by 1/4th the amount of the width
-	if (position.x < -0)
-	{ // check to see if the cube has gone off screen
+	// check if the GameObject is off the screen
+	if (position.x < 0)
+	{ // if it has, reinitialize it
 		initialize(translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f)));
-		// if it has, reinitialize it
 	}
 }
 
 void GameObject::collisionCheck(sf::Vector2f t_mousePosition)
 {
-	c2Circle mouseCircle;
-	mouseCircle.p = c2V(t_mousePosition.x, t_mousePosition.y);
-	mouseCircle.r = 20.0f;
+	// Only do collision checks for this game object
+	// If the cube is not already hit by the player
+	if (!isHit)
+	{
+		c2Circle mouseCircle;
+		mouseCircle.p = c2V(t_mousePosition.x, t_mousePosition.y);
+		mouseCircle.r = 20.0f;
 
-	float cubeSize = ((2.0f / (m_cameraZDistance - 1.0f))) * (m_screenWidth / 2.0f);
-	// we do -1 to the cameraZDistance to get the face closer to the camera for collision checking
+		float cubeSize = ((2.0f / (m_cameraZDistance - 1.0f))) * (m_screenWidth / 2.0f);
+		// we do -1 to the cameraZDistance to get the face closer to the camera for collision checking
 
-	c2Circle cubeCircle;
-	cubeCircle.p = c2V(position.x, position.y);
-	cubeCircle.r = glm::length(glm::vec2(cubeSize, cubeSize)) / 2.0f;
+		c2Circle cubeCircle;
+		cubeCircle.p = c2V(position.x, position.y);
+		cubeCircle.r = glm::length(glm::vec2(cubeSize, cubeSize)) / 2.0f;
 
-	if (c2CircletoCircle(mouseCircle, cubeCircle)) // 1 - true, 0 - false
+		if (c2CircletoCircle(mouseCircle, cubeCircle)) // 1 - true, 0 - false
+		{
+			isHit = true;
+		}
+	}
+}
+
+/// <summary>
+/// Play a short animation to show the player the cube was hit
+/// </summary>
+void GameObject::playHitAnimation()
+{
+	updateModel(translate(model, glm::vec3(0.0f, speed, 0.0f)));
+	updatePosition();
+
+	if (position.y > 600.0f)
 	{
 		initialize(translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f)));
+		isHit = false;
 	}
-	
 }

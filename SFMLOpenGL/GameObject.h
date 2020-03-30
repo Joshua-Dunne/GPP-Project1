@@ -49,9 +49,10 @@ public:
 	inline const sf::Vector2f getPosition() const { return position; };
 	void update();
 	inline void updateModel(const glm::mat4& t_newModel) { model = t_newModel; };
-	void updatePosition(sf::Vector2f t_direction);
+	void updatePosition();
 	void pathEndCheck();
 	void collisionCheck(sf::Vector2f t_mousePosition);
+	void playHitAnimation();
 };
 
 #endif

@@ -57,10 +57,17 @@ GameObject enemy[s_MAX_CUBES]{ {s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistan
 								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance},
 								{s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistance} };
 
+
 Game::Game() : 
 	window(VideoMode(800, 600), 
 	"Introduction to OpenGL Texturing")
 {
+	if (!backgroundTex.loadFromFile("Assets/Sprites/803.jpg"))
+	{
+		std::cout << "error loading background" << std::endl;
+	}
+
+	bgSprite.setTexture(backgroundTex);
 }
 
 Game::Game(sf::ContextSettings settings) : 
@@ -69,7 +76,12 @@ Game::Game(sf::ContextSettings settings) :
 	sf::Style::Default, 
 	settings)
 {
-	
+	if (!backgroundTex.loadFromFile("./Assets/Sprites/background.png"))
+	{
+		std::cout << "error loading background" << std::endl;
+	}
+
+	bgSprite.setTexture(backgroundTex);
 }
 
 Game::~Game()
@@ -427,6 +439,8 @@ void Game::render()
 	text.setPosition(50.f, 50.f);
 
 	window.draw(text);
+
+	window.draw(bgSprite);
 
 	// Restore OpenGL render states
 	// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7

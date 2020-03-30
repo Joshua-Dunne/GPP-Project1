@@ -48,6 +48,9 @@ private:
 	void render();
 	void drawCube(const mat4& t_mvp);
 	void unload();
+
+	sf::Texture backgroundTex;
+	sf::Sprite bgSprite;
 };
 
 #endif  // ! GAME_H

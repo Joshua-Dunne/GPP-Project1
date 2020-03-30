@@ -93,6 +93,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,6 +178,7 @@ xcopy $(GLEW_SDK)\bin\Release\Win32 $(TargetDir) /C /Y</Command>
     <None Include="Assets\Textures\cube.pdn" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\gameplay-programming-i-lab-14\SFMLOpenGL\backround.png" />
     <Image Include="Assets\Textures\coordinates.tga" />
     <Image Include="Assets\Textures\cube.png" />
     <Image Include="Assets\Textures\cube.tga" />

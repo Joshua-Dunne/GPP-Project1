@@ -22,6 +22,9 @@
     <Filter Include="Assets\Fonts">
       <UniqueIdentifier>{a0c40dbb-452e-48ee-8611-4c8e6663f05d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sprites">
+      <UniqueIdentifier>{bddb7902-2a56-40e1-b1a0-49a5805f5f27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -105,6 +108,9 @@
     </Image>
     <Image Include="Assets\Textures\uvtemplate.tga">
       <Filter>Assets\Textures</Filter>
+    </Image>
+    <Image Include="..\..\gameplay-programming-i-lab-14\SFMLOpenGL\backround.png">
+      <Filter>Sprites</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
