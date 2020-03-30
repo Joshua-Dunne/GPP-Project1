@@ -97,6 +97,7 @@ void GameObject::collisionCheck(sf::Vector2f t_mousePosition)
 		if (c2CircletoCircle(mouseCircle, cubeCircle)) // 1 - true, 0 - false
 		{
 			isHit = true;
+			acceleration = speed * 10.0f;
 		}
 	}
 }
@@ -106,12 +107,14 @@ void GameObject::collisionCheck(sf::Vector2f t_mousePosition)
 /// </summary>
 void GameObject::playHitAnimation()
 {
-	updateModel(translate(model, glm::vec3(0.0f, speed, 0.0f)));
+	updateModel(translate(model, glm::vec3(0.0f, acceleration, speed)));
 	updatePosition();
 
-	if (position.y > 600.0f)
+	if (position.y < 0.0f)
 	{
 		initialize(translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f)));
 		isHit = false;
 	}
+
+	acceleration -= speed * 0.075f; // gradually make the cube fall back down
 }

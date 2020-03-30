@@ -35,6 +35,7 @@ private:
 	sf::Vector2f position;
 	
 	float speed{ 0.0f }; // how fast this cube will move from right to left
+	float acceleration{ 0.0f };
 	float m_cameraZDistance; // how far away the camera is on the Z axis
 
 	const float m_screenWidth;
