@@ -70,6 +70,13 @@ Game::Game() :
 	}
 
 	bgSprite.setTexture(backgroundTex);
+
+	if (!m_bgm.openFromFile("./Assets/Sounds/bgm.ogg"))
+	{
+		std::cout << "error loading bgm.ogg" << std::endl;
+	}
+
+	m_bgm.play();
 }
 
 Game::Game(sf::ContextSettings settings) : 
@@ -85,6 +92,13 @@ Game::Game(sf::ContextSettings settings) :
 	}
 
 	bgSprite.setTexture(backgroundTex);
+
+	if (!m_bgm.openFromFile("./Assets/Sounds/bgm.ogg"))
+	{
+		std::cout << "error loading bgm.ogg" << std::endl;
+	}
+
+	m_bgm.play();
 }
 
 Game::~Game()

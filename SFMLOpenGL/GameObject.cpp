@@ -6,6 +6,12 @@ GameObject::GameObject() :
 	m_screenHeight(600.0f), 
 	m_cameraZDistance(10.0f)
 {
+	if (!m_hitBuffer.loadFromFile("./Assets/Sounds/cubeHit.ogg"))
+	{
+		std::cerr << "error loading cubeHit.ogg" << std::endl;
+	}
+
+	m_hitSound.setBuffer(m_hitBuffer);
 }
 	
 GameObject::GameObject(float t_screenWidth, float t_screenHeight, float t_cameraZDistance):
@@ -14,6 +20,12 @@ GameObject::GameObject(float t_screenWidth, float t_screenHeight, float t_camera
 	m_screenHeight(t_screenHeight),
 	m_cameraZDistance(t_cameraZDistance)
 {
+	if (!m_hitBuffer.loadFromFile("./Assets/Sounds/cubeHit.ogg"))
+	{
+		std::cerr << "error loading cubeHit.ogg" << std::endl;
+	}
+
+	m_hitSound.setBuffer(m_hitBuffer);
 }
 
 /// <summary>
@@ -104,6 +116,7 @@ void GameObject::collisionCheck(c2Circle t_peaHitbox)
 		if (c2CircletoCircle(t_peaHitbox, cubeCircle)) // 1 - true, 0 - false
 		{
 			isHit = true;
+			m_hitSound.play();
 			acceleration = speed * 10.0f;
 		}
 	}

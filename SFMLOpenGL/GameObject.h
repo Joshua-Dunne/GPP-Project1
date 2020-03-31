@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <SFML/System/Vector2.hpp>
-
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 #include "./ScreenSize.h"
@@ -46,6 +46,10 @@ private:
 	bool isHit{ false }; // whether or not this cube was hit
 	bool finishedFalling{ false }; // whether or not this cube has finished its falling
 
+	sf::SoundBuffer m_hitBuffer;
+	sf::Sound m_hitSound;
+	
+	
 public:
 	void initialize(const glm::mat4& t_model);
 	inline const glm::mat4 getModel() const { return model; };

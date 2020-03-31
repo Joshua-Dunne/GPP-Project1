@@ -53,6 +53,8 @@ private:
 	sf::Texture backgroundTex;
 	sf::Sprite bgSprite;
 
+	sf::Music m_bgm;
+
 	Peashooter m_peashooter;
 };
 

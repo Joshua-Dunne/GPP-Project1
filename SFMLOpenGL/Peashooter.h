@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Pea.h"
 
 class Peashooter
@@ -17,6 +18,9 @@ public:
 	~Peashooter();
 private:
 	std::vector<Pea> m_peas;
+
+	sf::Sound m_popSound;
+	sf::SoundBuffer m_popBuffer;
 
 public:
 	void shootPea(sf::Vector2f t_mousePos);
