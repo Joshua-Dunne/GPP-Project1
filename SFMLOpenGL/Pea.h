@@ -4,6 +4,10 @@
 #include "tinyc2.h"
 #include <iostream>
 
+/// <summary>
+/// Simple class that draws a circle shape and uses tinyc2 for collision checking
+/// </summary>
+
 class Pea
 {
 public:

@@ -398,25 +398,26 @@ void Game::update()
 
 
 
-	m_peashooter.updatePeas();
+	m_peashooter.updatePeas(); // update any active peas
 
 	for (auto& currEnemy : enemy)
 	{
-		currEnemy.update();
-
+		currEnemy.update(); // update our enemy cube
+		
 		if (!currEnemy.getHit())
-		{
+		{ // if the current enemy is not hit yet
 			for (int peaIndex = 0; peaIndex < s_MAX_PEAS; ++peaIndex)
 			{
 				if (m_peashooter.isPeaActive(peaIndex))
-				{
+				{ // if this pea is active
 					currEnemy.collisionCheck(m_peashooter.getPeaHitbox(peaIndex));
+					// check for collisions
 
 					if (currEnemy.getHit())
-					{
+					{// if this enemy was hit, deactivate the pea
 						m_peashooter.setPeaActive(false, peaIndex);
 						break;
-						// if this enemy was successfully hit, go on to the next enemy
+						// go on to the next enemy
 					}
 				}
 			}
@@ -461,12 +462,13 @@ void Game::render()
 
 	text.setFillColor(sf::Color(255, 255, 255, 170));
 	text.setPosition(50.f, 50.f);
+	// setup text stuff
 
-	window.draw(bgSprite);
+	window.draw(bgSprite); // draw the background
 
-	window.draw(text);
+	window.draw(text); // draw the text
 
-	m_peashooter.drawPeas();
+	m_peashooter.drawPeas(); // render any available peas
 
 
 	// Restore OpenGL render states

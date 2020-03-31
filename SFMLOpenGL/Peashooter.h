@@ -1,6 +1,10 @@
 #ifndef PEASHOOTER_H
 #define PEASHOOTER_H
 
+/// <summary>
+/// Peashooter class that emulates a pool pattern by using a vector of Pea classes.
+/// </summary>
+
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include "Pea.h"
@@ -8,6 +12,7 @@
 class Peashooter
 {
 public:
+	Peashooter() = delete; // do not use the default constructor
 	Peashooter(int t_numOfPeas, float t_peaSize, sf::RenderWindow& t_window);
 	~Peashooter();
 private:

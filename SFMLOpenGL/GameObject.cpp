@@ -45,12 +45,16 @@ void GameObject::update()
 	if (!isHit)
 	{
 		updateModel(translate(model, glm::vec3(-speed, 0.0f, 0.0)));
+		// translate the model itself based on the speed
 		updatePosition();
+		// find the new position where the cube is now
 		pathEndCheck();
+		// check to see if the GameObject has reached the end of it's path
 	}
 	else
 	{
 		playHitAnimation();
+		// play an animation if the cube is hit
 	}
 }
 
@@ -60,8 +64,11 @@ void GameObject::update()
 void GameObject::updatePosition()
 {
 	const float* modelData = (const float*)glm::value_ptr(model);
+	// get the model data from the mat4
 	position.x = m_screenWidth * ((modelData[12] + m_cameraZDistance) / (m_cameraZDistance * 2));
+	// get the x position based on the camera
 	position.y = m_screenHeight * (((modelData[13] / (4.0f / 3.0f)) + m_cameraZDistance) / (10.0f * 2));
+	// get the y position based on the camera
 }
 
 /// <summary>
@@ -88,6 +95,7 @@ void GameObject::collisionCheck(c2Circle t_peaHitbox)
 		c2Circle cubeCircle;
 		cubeCircle.p = c2V(position.x, position.y);
 		cubeCircle.r = glm::length(glm::vec2(cubeSize, cubeSize)) / 2.0f;
+		// divide by 2 to get the radius of the diameter
 
 		if (c2CircletoCircle(t_peaHitbox, cubeCircle)) // 1 - true, 0 - false
 		{
@@ -103,13 +111,17 @@ void GameObject::collisionCheck(c2Circle t_peaHitbox)
 void GameObject::playHitAnimation()
 {
 	updateModel(translate(model, glm::vec3(0.0f, acceleration, speed)));
+	// translate the model based on speed and acceleration
 	updatePosition();
+	// find the position of the model afterwards
 
 	if (position.y < 0.0f)
-	{
+	{ // if the GameObject has fallen off-screen
 		initialize(translate(glm::mat4(1.0f), glm::vec3(10.0f, 0.0f, 0.0f)));
+		// put it back to it's starting position
 		isHit = false;
+		// this GameObject is no longer hit
 	}
 
-	acceleration -= speed * 0.075f; // gradually make the cube fall back down
+	acceleration -= speed * 0.075f; // gradually make the cube falls down
 }

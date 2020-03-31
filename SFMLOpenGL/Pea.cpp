@@ -7,6 +7,10 @@ Pea::Pea(float radius, sf::RenderWindow& t_window) : c_STARTING_RADIUS{ 20.0f },
 	m_body.setFillColor(sf::Color::Green);
 }
 
+/// <summary>
+/// Place the Pea at the mouse position
+/// </summary>
+/// <param name="t_mousePos">Position of mouse (relative to window)</param>
 void Pea::placePea(sf::Vector2f t_mousePos)
 {
 	m_body.setPosition(sf::Vector2f{ t_mousePos.x, -200.0f });
@@ -19,6 +23,9 @@ void Pea::placePea(sf::Vector2f t_mousePos)
 	m_inUse = true;
 }
 
+/// <summary>
+/// Update any peas that are in use
+/// </summary>
 void Pea::updatePea()
 {
 	if (m_inUse)
@@ -29,11 +36,14 @@ void Pea::updatePea()
 			m_inUse = false;
 		}
 
-		m_body.move(sf::Vector2f{ 0, 5.0f });
-		m_hitbox.p = c2V(m_body.getPosition().x, m_body.getPosition().y);
+		m_body.move(sf::Vector2f{ 0, 5.0f }); // move the pea's visual body
+		m_hitbox.p = c2V(m_body.getPosition().x, m_body.getPosition().y); // move the pea's hitbox
 	}
 }
 
+/// <summary>
+/// Render any peas that are in use
+/// </summary>
 void Pea::render()
 {
 	if (m_inUse) // only draw if this pea is actually being used currently
