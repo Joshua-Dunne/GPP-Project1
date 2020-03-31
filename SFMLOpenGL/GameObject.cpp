@@ -83,6 +83,10 @@ void GameObject::pathEndCheck()
 	}
 }
 
+/// <summary>
+/// Check for collisions against Pea hitboxes
+/// </summary>
+/// <param name="t_peaHitbox">tinyc2 hitbox of Pea</param>
 void GameObject::collisionCheck(c2Circle t_peaHitbox)
 {
 	// Only do collision checks for this game object

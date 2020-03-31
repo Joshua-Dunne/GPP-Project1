@@ -1,5 +1,10 @@
 #include "Pea.h"
 
+/// <summary>
+/// Default constructor that sets a radius for the Pea and gets the window to draw it
+/// </summary>
+/// <param name="radius">Radius of Pea</param>
+/// <param name="t_window">Window to draw to</param>
 Pea::Pea(float radius, sf::RenderWindow& t_window) : c_STARTING_RADIUS{ 20.0f }, m_window(t_window)
 {
 	m_body.setRadius(radius);
