@@ -1,5 +1,4 @@
 #include "GameObject.h"
-#include "./tinyc2.h"
 
 GameObject::GameObject() : 
 	model(1.0f), 
@@ -77,16 +76,12 @@ void GameObject::pathEndCheck()
 	}
 }
 
-void GameObject::collisionCheck(sf::Vector2f t_mousePosition)
+void GameObject::collisionCheck(c2Circle t_peaHitbox)
 {
 	// Only do collision checks for this game object
 	// If the cube is not already hit by the player
 	if (!isHit)
 	{
-		c2Circle mouseCircle;
-		mouseCircle.p = c2V(t_mousePosition.x, t_mousePosition.y);
-		mouseCircle.r = 20.0f;
-
 		float cubeSize = ((2.0f / (m_cameraZDistance - 1.0f))) * (m_screenWidth / 2.0f);
 		// we do -1 to the cameraZDistance to get the face closer to the camera for collision checking
 
@@ -94,7 +89,7 @@ void GameObject::collisionCheck(sf::Vector2f t_mousePosition)
 		cubeCircle.p = c2V(position.x, position.y);
 		cubeCircle.r = glm::length(glm::vec2(cubeSize, cubeSize)) / 2.0f;
 
-		if (c2CircletoCircle(mouseCircle, cubeCircle)) // 1 - true, 0 - false
+		if (c2CircletoCircle(t_peaHitbox, cubeCircle)) // 1 - true, 0 - false
 		{
 			isHit = true;
 			acceleration = speed * 10.0f;

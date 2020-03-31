@@ -31,6 +31,7 @@ GLenum	error;		// OpenGL Error Code
 
 float m_cameraZDistance{ 10.0f };
 const int s_MAX_CUBES{ 6 };
+const int s_MAX_PEAS{ 5 };
 
 //Please see .//Assets//Textures// for more textures
 const string filename = ".//Assets//Textures//grid_wip.tga";
@@ -60,7 +61,8 @@ GameObject enemy[s_MAX_CUBES]{ {s_SCREEN_WIDTH, s_SCREEN_HEIGHT, m_cameraZDistan
 
 Game::Game() : 
 	window(VideoMode(800, 600), 
-	"Introduction to OpenGL Texturing")
+	"Cube Buster"),
+	m_peashooter(s_MAX_PEAS, 25.0f, window)
 {
 	if (!backgroundTex.loadFromFile("Assets/Sprites/803.jpg"))
 	{
@@ -71,10 +73,11 @@ Game::Game() :
 }
 
 Game::Game(sf::ContextSettings settings) : 
-	window(VideoMode(800, 600), 
-	"Introduction to OpenGL Texturing", 
+	window(VideoMode(static_cast<unsigned int>(s_SCREEN_WIDTH), static_cast<unsigned int>(s_SCREEN_HEIGHT)),
+	"Cube Buster", 
 	sf::Style::Default, 
-	settings)
+	settings),
+	m_peashooter(s_MAX_PEAS, 25.0f, window)
 {
 	if (!backgroundTex.loadFromFile("./Assets/Sprites/background.png"))
 	{
@@ -115,10 +118,7 @@ void Game::run()
 
 			if (sf::Event::MouseButtonPressed == event.type)
 			{
-				for (auto& currEnemy : enemy)
-				{
-					currEnemy.collisionCheck(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
-				}
+				m_peashooter.shootPea(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 			}
 
 			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -396,8 +396,29 @@ void Game::update()
 	DEBUG_MSG("Updating...");
 #endif
 
+
+
+	m_peashooter.updatePeas();
+
 	for (auto& currEnemy : enemy)
+	{
 		currEnemy.update();
+
+		for (int peaIndex = 0; peaIndex < s_MAX_PEAS; ++peaIndex)
+		{
+			if (m_peashooter.isPeaActive(peaIndex))
+			{
+				currEnemy.collisionCheck(m_peashooter.getPeaHitbox(peaIndex));
+
+				if (currEnemy.getHit())
+				{
+					m_peashooter.setPeaActive(false, peaIndex);
+					break;
+					// if this enemy was successfully hit, go on to the next enemy
+				}
+			}
+		}
+	}
 
 	// Update Model View Projection
 	// For mutiple objects (cubes) create multiple models
@@ -438,9 +459,12 @@ void Game::render()
 	text.setFillColor(sf::Color(255, 255, 255, 170));
 	text.setPosition(50.f, 50.f);
 
+	window.draw(bgSprite);
+
 	window.draw(text);
 
-	window.draw(bgSprite);
+	m_peashooter.drawPeas();
+
 
 	// Restore OpenGL render states
 	// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7

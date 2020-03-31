@@ -21,6 +21,7 @@
 #include <stb_image.h>
 
 #include <GameObject.h>
+#include "Peashooter.h"
 
 using namespace std;
 using namespace sf;
@@ -51,6 +52,8 @@ private:
 
 	sf::Texture backgroundTex;
 	sf::Sprite bgSprite;
+
+	Peashooter m_peashooter;
 };
 
 #endif  // ! GAME_H

@@ -13,6 +13,8 @@
 #include <iostream>
 
 #include "./ScreenSize.h"
+#include "tinyc2.h"
+
 
 class GameObject
 {
@@ -48,11 +50,12 @@ public:
 	void initialize(const glm::mat4& t_model);
 	inline const glm::mat4 getModel() const { return model; };
 	inline const sf::Vector2f getPosition() const { return position; };
+	inline const bool getHit() const { return isHit; };
 	void update();
 	inline void updateModel(const glm::mat4& t_newModel) { model = t_newModel; };
 	void updatePosition();
 	void pathEndCheck();
-	void collisionCheck(sf::Vector2f t_mousePosition);
+	void collisionCheck(c2Circle t_peaHitbox);
 	void playHitAnimation();
 };
 
