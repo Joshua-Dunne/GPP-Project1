@@ -410,8 +410,6 @@ void Game::update()
 	DEBUG_MSG("Updating...");
 #endif
 
-
-
 	m_peashooter.updatePeas(); // update any active peas
 
 	for (auto& currEnemy : enemy)
@@ -430,6 +428,7 @@ void Game::update()
 					if (currEnemy.getHit())
 					{// if this enemy was hit, deactivate the pea
 						m_peashooter.setPeaActive(false, peaIndex);
+						score++;
 						break;
 						// go on to the next enemy
 					}
@@ -462,14 +461,8 @@ void Game::render()
 	// https://www.sfml-dev.org/documentation/2.0/classsf_1_1RenderTarget.php#a8d1998464ccc54e789aaf990242b47f7
 	window.pushGLStates();
 
-	// Find mouse position using sf::Mouse
-	int x = Mouse::getPosition(window).x;
-	int y = Mouse::getPosition(window).y;
-
-	string hud = "Heads Up Display ["
-		+ string(toString(x))
-		+ "]["
-		+ string(toString(y))
+	string hud = "Score ["
+		+ string(toString(score))
 		+ "]";
 
 	Text text(hud, font);

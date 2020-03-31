@@ -55,6 +55,8 @@ private:
 
 	sf::Music m_bgm;
 
+	int score{ 0 };
+
 	Peashooter m_peashooter;
 };
 
