@@ -404,17 +404,20 @@ void Game::update()
 	{
 		currEnemy.update();
 
-		for (int peaIndex = 0; peaIndex < s_MAX_PEAS; ++peaIndex)
+		if (!currEnemy.getHit())
 		{
-			if (m_peashooter.isPeaActive(peaIndex))
+			for (int peaIndex = 0; peaIndex < s_MAX_PEAS; ++peaIndex)
 			{
-				currEnemy.collisionCheck(m_peashooter.getPeaHitbox(peaIndex));
-
-				if (currEnemy.getHit())
+				if (m_peashooter.isPeaActive(peaIndex))
 				{
-					m_peashooter.setPeaActive(false, peaIndex);
-					break;
-					// if this enemy was successfully hit, go on to the next enemy
+					currEnemy.collisionCheck(m_peashooter.getPeaHitbox(peaIndex));
+
+					if (currEnemy.getHit())
+					{
+						m_peashooter.setPeaActive(false, peaIndex);
+						break;
+						// if this enemy was successfully hit, go on to the next enemy
+					}
 				}
 			}
 		}

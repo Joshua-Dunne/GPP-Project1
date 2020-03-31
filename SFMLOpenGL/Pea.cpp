@@ -4,13 +4,13 @@ Pea::Pea(float radius, sf::RenderWindow& t_window) : c_STARTING_RADIUS{ 20.0f },
 {
 	m_body.setRadius(radius);
 	m_body.setOrigin(sf::Vector2f{ radius, radius }); // set origin to the center of circle shape
+	m_body.setFillColor(sf::Color::Green);
 }
 
 void Pea::placePea(sf::Vector2f t_mousePos)
 {
 	m_body.setPosition(sf::Vector2f{ t_mousePos.x, -200.0f });
 	// take the x position of the mouse, but ignore the mouse's y position
-	// we want each pea to shoot
 	m_body.setRadius(c_STARTING_RADIUS);
 
 	m_hitbox.p = c2V(t_mousePos.x, t_mousePos.y);
