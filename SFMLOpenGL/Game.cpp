@@ -237,27 +237,9 @@ void Game::initialize()
 
 	// NOTE: uniforms values must be used within Shader so that they 
 	// can be retreived
-	const char* vs_src =
-		"#version 400\n\r"
-		""
-		"in vec3 sv_position;"
-		"in vec4 sv_color;"
-		"in vec2 sv_uv;"
-		""
-		"out vec4 color;"
-		"out vec2 uv;"
-		""
-		"uniform mat4 sv_mvp;"
-		"uniform float sv_x_offset;"
-		"uniform float sv_y_offset;"
-		"uniform float sv_z_offset;"
-		""
-		"void main() {"
-		"	color = sv_color;"
-		"	uv = sv_uv;"
-		//"	gl_Position = vec4(sv_position, 1);"
-		"	gl_Position = sv_mvp * vec4(sv_position.x + sv_x_offset, sv_position.y + sv_y_offset, sv_position.z + sv_z_offset, 1 );"
-		"}"; //Vertex Shader Src
+
+	std::string vs_shader = readShader("vsshader.txt");
+	const char* vs_src = &vs_shader[0]; //Vertex Shader Src
 
 	DEBUG_MSG("Setting Up Vertex Shader");
 
@@ -277,20 +259,8 @@ void Game::initialize()
 		DEBUG_MSG("ERROR: Vertex Shader Compilation Error");
 	}
 
-	const char* fs_src =
-		"#version 400\n\r"
-		""
-		"uniform sampler2D f_texture;"
-		""
-		"in vec4 color;"
-		"in vec2 uv;"
-		""
-		"out vec4 fColor;"
-		""
-		"void main() {"
-		"	fColor = color - texture2D(f_texture, uv);"
-		""
-		"}"; //Fragment Shader Src
+	std::string fs_shader = readShader("fsshader.txt");
+	const char* fs_src = &fs_shader[0]; //Fragment Shader Src
 
 	DEBUG_MSG("Setting Up Fragment Shader");
 
@@ -588,3 +558,20 @@ void Game::unload()
 	stbi_image_free(img_data);		// Free image stbi_image_free(..)
 }
 
+std::string Game::readShader(std::string t_fileName)
+{
+	std::string line;
+	std::ifstream readFromFile(t_fileName);
+	std::string fileContents;
+
+	if (readFromFile.is_open())
+	{
+		while (std::getline(readFromFile, line)) // while there's lines to go through
+		{
+			fileContents += line;
+		}
+	}
+
+	readFromFile.close();
+	return fileContents;
+}

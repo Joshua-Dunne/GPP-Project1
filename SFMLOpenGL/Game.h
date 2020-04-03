@@ -7,6 +7,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/wglew.h>
+#include <fstream>
 
 
 #include <glm/glm.hpp>
@@ -49,6 +50,7 @@ private:
 	void render();
 	void drawCube(const mat4& t_mvp);
 	void unload();
+	std::string readShader(std::string t_fileName);
 
 	sf::Texture backgroundTex;
 	sf::Sprite bgSprite;
