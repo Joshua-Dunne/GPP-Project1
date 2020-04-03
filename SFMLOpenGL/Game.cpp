@@ -386,7 +386,7 @@ void Game::update()
 	{
 		currEnemy.update(); // update our enemy cube
 		
-		if (!currEnemy.getHit())
+		if (!currEnemy.getHit() && currEnemy.doneFalling())
 		{ // if the current enemy is not hit yet
 			for (int peaIndex = 0; peaIndex < s_MAX_PEAS; ++peaIndex)
 			{
@@ -398,6 +398,7 @@ void Game::update()
 					if (currEnemy.getHit())
 					{// if this enemy was hit, deactivate the pea
 						m_peashooter.setPeaActive(false, peaIndex);
+						currEnemy.setHit(false); // reset the enemy being hit for the next frame
 						score++;
 						break;
 						// go on to the next enemy

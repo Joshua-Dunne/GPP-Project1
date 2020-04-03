@@ -33,18 +33,20 @@ private:
 	// model
 	// collider tinyc2
 
-	glm::mat4 model;
-	sf::Vector2f position;
+	glm::mat4 m_model;
+	sf::Vector2f m_position;
 	
-	float speed{ 0.0f }; // how fast this cube will move from right to left
-	float acceleration{ 0.0f };
+	float m_speed{ 0.0f }; // how fast this cube will move from right to left
+	float m_acceleration{ 0.0f };
 	float m_cameraZDistance; // how far away the camera is on the Z axis
 
 	const float m_screenWidth;
 	const float m_screenHeight;
 
-	bool isHit{ false }; // whether or not this cube was hit
+	bool m_isHit{ false }; // whether or not this cube was hit
 	bool finishedFalling{ false }; // whether or not this cube has finished its falling
+
+	int m_health;
 
 	sf::SoundBuffer m_hitBuffer;
 	sf::Sound m_hitSound;
@@ -52,11 +54,13 @@ private:
 	
 public:
 	void initialize(const glm::mat4& t_model);
-	inline const glm::mat4 getModel() const { return model; };
-	inline const sf::Vector2f getPosition() const { return position; };
-	inline const bool getHit() const { return isHit; };
+	inline const glm::mat4 getModel() const { return m_model; };
+	inline const sf::Vector2f getPosition() const { return m_position; };
+	inline const bool getHit() const { return m_isHit; };
+	inline const bool doneFalling() const { return finishedFalling; };
+	inline void setHit(bool t_wasHit) { m_isHit = t_wasHit; };
 	void update();
-	inline void updateModel(const glm::mat4& t_newModel) { model = t_newModel; };
+	inline void updateModel(const glm::mat4& t_newModel) { m_model = t_newModel; };
 	void updatePosition();
 	void pathEndCheck();
 	void collisionCheck(c2Circle t_peaHitbox);
